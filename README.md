@@ -2,28 +2,32 @@
 
 ## Overview
 
-This project explores household energy consumption using two complementary analytical approaches:
+This project analyses household appliance energy consumption using two complementary approaches:
 
-1. Multivariate machine-learning models using environmental and household sensor data.
-2. Time-series forecasting using historical energy-consumption patterns.
+1. **Machine-learning regression**, using household and environmental variables to predict energy usage.
+2. **Time-series forecasting**, using historical consumption patterns to forecast future energy demand.
 
-The project demonstrates an end-to-end Python workflow including data preparation, exploratory analysis, model development, model comparison, hyperparameter tuning and forecasting.
+The project demonstrates an end-to-end Python workflow covering data preparation, exploratory analysis, feature analysis, model development, hyperparameter tuning, time-series decomposition and forecasting.
+
+---
 
 ## Project Objectives
 
-The analysis aims to answer two main questions:
+The analysis focuses on two questions:
 
-- Which environmental and household factors are useful for predicting appliance energy consumption?
-- Can historical energy-use patterns be used to forecast future consumption?
+- Which household and environmental variables are most useful for predicting appliance energy consumption?
+- Can historical energy-consumption patterns be used to forecast future demand?
+
+---
 
 ## Part 1 — Energy Usage Prediction
 
-The first analysis uses household and environmental variables to predict appliance energy consumption.
+The first analysis uses household sensor, environmental and time-related variables to predict appliance energy consumption.
 
 The workflow includes:
 
 - Data cleaning and validation
-- Exploratory data analysis and visualisation
+- Exploratory data analysis
 - Feature preparation and scaling
 - Linear Regression
 - Random Forest Regression
@@ -32,57 +36,84 @@ The workflow includes:
 - Model evaluation using RMSE, MAE and R²
 - Feature-importance analysis
 
-Random Forest and Gradient Boosting provided stronger predictive performance than the linear baseline, indicating that energy consumption contains important non-linear relationships.
+Random Forest and Gradient Boosting both captured non-linear relationships in the data more effectively than the linear baseline. Feature-importance analysis also showed that **time of day (`hour_minute`) was the most influential predictor in both models**, suggesting that energy consumption has a strong temporal component.
 
-![Feature Importance](images/feature_importance.png)
+### Feature Importance
+
+<p align="center">
+  <img src="images/rf_feature_importance.png" width="45%" alt="Random Forest Feature Importance">
+  <img src="images/gbm_feature_importance.png" width="45%" alt="Gradient Boosting Feature Importance">
+</p>
+
+The importance of time-related features motivated the second part of the project, where energy consumption was analysed directly as a time series.
+
+---
 
 ## Part 2 — Time Series Forecasting
 
 The second analysis focuses on the temporal behaviour of appliance energy consumption.
 
-Time-series exploration identified strong recurring daily patterns in energy use. ARIMA and LSTM models were developed and evaluated to investigate how effectively historical consumption can be used for forecasting.
+Time-series decomposition was used to separate the observed data into trend, seasonal and residual components. The results showed a strong recurring daily pattern in energy use, supporting the use of time-series forecasting methods. :contentReference[oaicite:0]{index=0}
 
-The LSTM model produced the strongest overall forecasting performance among the tested models, while ARIMA had difficulty capturing some of the larger fluctuations in energy demand.
+### Seasonal Structure
 
-![Seasonal Decomposition](images/seasonal_decomposition.png)
+<p align="center">
+  <img src="images/seasonal_decomposition.png" width="75%" alt="Energy Consumption Seasonal Decomposition">
+</p>
 
-![LSTM Forecast](images/lstm_forecast.png)
+ARIMA and LSTM models were then developed to forecast future appliance energy consumption.
+
+The ARIMA model captured parts of the overall pattern but had difficulty representing larger fluctuations and peak demand. :contentReference[oaicite:1]{index=1}
+
+The LSTM model achieved the strongest overall forecasting performance among the tested approaches based on the evaluation metrics used in the project. :contentReference[oaicite:2]{index=2}
+
+### LSTM Forecast
+
+<p align="center">
+  <img src="images/lstm_forecast.png" width="75%" alt="Actual versus Predicted Energy Consumption using LSTM">
+</p>
+
+The forecast follows the overall consumption pattern reasonably well, although some extreme peaks remain difficult to predict.
+
+---
+
+## Key Findings
+
+- Household energy consumption shows strong **non-linear and time-dependent behaviour**.
+- Time of day was the most influential feature in both Random Forest and Gradient Boosting models.
+- Feature importance from the regression models suggested that temporal patterns deserved further investigation.
+- Time-series decomposition confirmed a strong recurring daily pattern in appliance energy usage.
+- LSTM performed better than the other tested approaches for forecasting this highly variable time series.
+- Model selection should consider both predictive accuracy and the underlying structure of the data rather than relying on a single modelling approach.
+
+---
 
 ## Technologies
 
-Python  
-Pandas  
-NumPy  
-Matplotlib / Seaborn  
-scikit-learn  
-statsmodels  
-TensorFlow / Keras
+- **Python**
+- **Pandas**
+- **NumPy**
+- **Matplotlib / Seaborn**
+- **scikit-learn**
+- **statsmodels**
+- **TensorFlow / Keras**
+
+---
 
 ## Repository Structure
 
 ```text
-notebooks/
-    01_energy_usage_prediction.ipynb
-    02_energy_time_series_forecasting.ipynb
-
-images/
-    feature_importance.png
-    seasonal_decomposition.png
-    lstm_forecast.png
-
-README.md
-requirements.txt
-
-## Key Learning Outcomes  
-
-This project strengthened my practical experience in:  
-
-- analysing complex multivariable datasets;
-- selecting appropriate analytical approaches based on data characteristics;
-- comparing machine-learning and time-series methods;
-- evaluating model performance critically rather than relying on a single metric;
-- translating modelling results into practical analytical conclusions.
-
-## Future Improvements  
-
-Potential extensions include further feature engineering, more systematic hyperparameter optimisation, comparison with additional forecasting methods such as SARIMA, and improvements to model interpretability and computational efficiency.
+energy-consumption-analytics-forecasting/
+│
+├── README.md
+├── requirements.txt
+│
+├── notebooks/
+│   ├── 01_energy_usage_prediction.ipynb
+│   └── 02_energy_time_series_forecasting.ipynb
+│
+└── images/
+    ├── rf_feature_importance.png
+    ├── gbm_feature_importance.png
+    ├── seasonal_decomposition.png
+    └── lstm_forecast.png
